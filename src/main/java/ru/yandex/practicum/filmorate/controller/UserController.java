@@ -27,13 +27,13 @@ public class UserController {
     }
 
     @GetMapping
-    public Set<User> findUsers() {
+    public Set<User> find() {
         log.info("All users{}", users.toString());
         return users;
     }
 
     @PostMapping
-    public User createUser (@RequestBody User user) throws ValidationException {
+    public User create(@RequestBody User user) throws ValidationException {
         if (user.getName().isBlank() || user.getName().isEmpty()) {
             user.setName(user.getLogin());
             log.debug("User name was empty and replaced with login{}", user.toString());
@@ -47,7 +47,7 @@ public class UserController {
     }
 
     @PutMapping
-    public User updateUser(@RequestBody User user) throws ValidationException {
+    public User update(@RequestBody User user) throws ValidationException {
         if (user.getName().isBlank()) {
             user.setName(user.getLogin());
             log.debug("User name was empty and replaced with login{}", user.toString());
@@ -65,8 +65,8 @@ public class UserController {
         return user;
     }
 
-    private void validate (User user) throws ValidationException {
-        if (user.getEmail().isBlank() ||user.getEmail().isEmpty()) {
+    private void validate(User user) throws ValidationException {
+        if (user.getEmail().isBlank() || user.getEmail().isEmpty()) {
             log.error("Email field is empty{}", user.toString());
             throw new ValidationException("Email field is empty");
         } else if (!user.getEmail().contains("@")) {

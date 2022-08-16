@@ -23,13 +23,13 @@ public class FilmController {
     }
 
     @GetMapping
-    public Set<Film> findFilms () {
+    public Set<Film> find() {
         log.info("All films {}", films.toString());
         return films;
     }
 
     @PostMapping
-    public Film createFilm(@RequestBody Film film) throws ValidationException {
+    public Film create(@RequestBody Film film) throws ValidationException {
         idGen();
         film.setId(id);
         validate(film);
@@ -39,7 +39,7 @@ public class FilmController {
     }
 
     @PutMapping
-    public Film updateFilm(@RequestBody Film film) throws ValidationException {
+    public Film update(@RequestBody Film film) throws ValidationException {
         validate(film);
         for (Film f : films) {
             if (f.getId() == film.getId()) {

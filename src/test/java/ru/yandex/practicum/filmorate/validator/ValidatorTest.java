@@ -16,72 +16,72 @@ public class ValidatorTest {
     public void validateFilmWithNormalFields () throws ValidationException {
         final FilmController fc = new FilmController();
         Film film1 = new Film(1,"Terminator 2", "judjement day", LocalDate.of(1990,01,01),90);
-        fc.createFilm(film1);
-        assertEquals(1, fc.findFilms().size());
+        fc.create(film1);
+        assertEquals(1, fc.find().size());
     }
 
     @Test
     public void validateFilmWithEmptyName(){
         final FilmController fc = new FilmController();
         Film film1 = new Film(1," ", "judjement day", LocalDate.of(1990,01,01),90);
-        assertThrows(ValidationException.class, () -> fc.createFilm(film1));
+        assertThrows(ValidationException.class, () -> fc.create(film1));
     }
 
     @Test
     public void validateFilmWithWrongDate(){
         final FilmController fc = new FilmController();
         Film film1 = new Film(1,"Terminator 2", "judjement day", LocalDate.of(1790,01,01),90);
-        assertThrows(ValidationException.class, () -> fc.createFilm(film1));
+        assertThrows(ValidationException.class, () -> fc.create(film1));
     }
 
     @Test
     public void validateFilmWithWrongDuration(){
         final FilmController fc = new FilmController();
         Film film1 = new Film(1,"Terminator 2", "judjement day", LocalDate.of(1990,01,01),-90);
-        assertThrows(ValidationException.class, () -> fc.createFilm(film1));
+        assertThrows(ValidationException.class, () -> fc.create(film1));
     }
 
     @Test
     public void validateUserWithNormalFields() throws ValidationException {
         final UserController uc = new UserController();
         User user = new User(1, "johndoe69@gmail.com", "johndoe","John Doe", LocalDate.of(1986,12,12));
-        uc.createUser(user);
-        assertEquals(1, uc.findUsers().size());
+        uc.create(user);
+        assertEquals(1, uc.find().size());
     }
 
     @Test
     public void validateUserWithEmptyEmail(){
         final UserController uc = new UserController();
         User user = new User(1, " ", "johndoe","John Doe", LocalDate.of(1986,12,12));
-        assertThrows(ValidationException.class, () -> uc.createUser(user));
+        assertThrows(ValidationException.class, () -> uc.create(user));
     }
 
     @Test
     public void validateUserWithWrongEmail(){
         final UserController uc = new UserController();
         User user = new User(1, "johndoe69gmail.com", "johndoe","John Doe", LocalDate.of(1986,12,12));
-        assertThrows(ValidationException.class, () -> uc.createUser(user));
+        assertThrows(ValidationException.class, () -> uc.create(user));
     }
 
     @Test
     public void validateUserWithEmptyLogin(){
         final UserController uc = new UserController();
         User user = new User(1, "johndoe69@gmail.com", " ","John Doe", LocalDate.of(1986,12,12));
-        assertThrows(ValidationException.class, () -> uc.createUser(user));
+        assertThrows(ValidationException.class, () -> uc.create(user));
     }
 
     @Test
     public void validateUserWithLoginWithSpaces(){
         final UserController uc = new UserController();
         User user = new User(1, "johndoe69@gmail.com", "john doe","John Doe", LocalDate.of(1986,12,12));
-        assertThrows(ValidationException.class, () -> uc.createUser(user));
+        assertThrows(ValidationException.class, () -> uc.create(user));
     }
 
     @Test
     public void replaceNameWithLoginField() throws ValidationException {
         final UserController uc = new UserController();
         User user = new User(1, "johndoe69@gmail.com", "johndoe"," ", LocalDate.of(1986,12,12));
-        uc.createUser(user);
+        uc.create(user);
         assertEquals(user.getLogin(), user.getName());
     }
 
@@ -89,7 +89,7 @@ public class ValidatorTest {
     public void validateUserWithWrongBirthdate(){
         final UserController uc = new UserController();
         User user = new User(1, "johndoe69@gmail.com", "johndoe","John Doe", LocalDate.of(2986,12,12));
-        assertThrows(ValidationException.class, () -> uc.createUser(user));
+        assertThrows(ValidationException.class, () -> uc.create(user));
     }
 
 }
