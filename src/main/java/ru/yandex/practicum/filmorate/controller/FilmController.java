@@ -1,5 +1,4 @@
 package ru.yandex.practicum.filmorate.controller;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.FilmIdExceptoin;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
@@ -8,7 +7,7 @@ import ru.yandex.practicum.filmorate.service.FilmService;
 
 import java.util.Collection;
 import java.util.List;
-@Slf4j
+
 @RestController
 @RequestMapping("/films")
 public class FilmController {
@@ -20,7 +19,7 @@ public class FilmController {
     }
 
     @GetMapping
-    public Collection<Film> getAllFilms() {
+    public Collection<Film> getAll() {
         return fs.getFilmStorage().getAllFilms();
     }
 
@@ -50,7 +49,7 @@ public class FilmController {
     }
 
     @GetMapping("/popular")
-    public List<Film> getTopFilms(@RequestParam(value = "count", defaultValue = "10", required = false) long count) {
+    public List<Film> getTop(@RequestParam(value = "count", defaultValue = "10", required = false) long count) {
         return fs.getPopularFilms(count);
     }
 }

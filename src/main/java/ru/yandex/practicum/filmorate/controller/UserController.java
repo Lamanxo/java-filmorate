@@ -37,13 +37,13 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public User findUser(@PathVariable("id") long id) throws UserIdException {
+    public User find(@PathVariable("id") long id) throws UserIdException {
         return userService.getUserStorage().getUserById(id);
     }
 
     @PutMapping("/{id}/friends/{friendId}")
-    public void addFriendToUser(@PathVariable("id") long id,
-                                @PathVariable("friendId") long friendId) throws UserIdException {
+    public void addFriend(@PathVariable("id") long id,
+                          @PathVariable("friendId") long friendId) throws UserIdException {
         userService.addFriend(id, friendId);
     }
 
@@ -54,7 +54,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}/friends")
-    public List<User> getUserFriends(@PathVariable("id") long id) throws UserIdException {
+    public List<User> getFriends(@PathVariable("id") long id) throws UserIdException {
         return userService.getAllFriends(id);
     }
 

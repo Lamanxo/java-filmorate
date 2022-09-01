@@ -6,11 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.UserIdException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Getter
@@ -44,6 +43,10 @@ public class UserService {
     }
 
     public List<User> getAllFriends (long userId) throws UserIdException {
+        if (userId <= 0) {
+            log.debug("User {}", userId);
+            throw new UserIdException(String.format("user with id:%s not found", userId));
+        }
         List<User> allFriendsList = new ArrayList<>();
         for (long friendId : userStorage.getUserById(userId).getFriendsId()) {
             allFriendsList.add(userStorage.getUserById(friendId));
@@ -52,14 +55,17 @@ public class UserService {
     }
 
     public List<User> getMutualFriends(long userId, long friendId) throws UserIdException {
-        List<User> mutualFriends = new ArrayList<>();
-        for (User user : getAllFriends(userId)) {
-            for (User user1 : getAllFriends(friendId)) {
-                if (user.equals(user1)) {
-                    mutualFriends.add(user);
-                }
-            }
-        }
-        return mutualFriends;
+        Set<Long> setMutualFriends = new HashSet<>(userStorage.getUserById(friendId).getFriendsId());
+        setMutualFriends.retainAll(userStorage.getUserById(userId).getFriendsId());
+        return setMutualFriends
+                .stream()
+                .map(id -> {
+                    try {
+                        return userStorage.getUserById(id);
+                    } catch (UserIdException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .collect(Collectors.toList());
     }
 }
