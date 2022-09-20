@@ -4,12 +4,17 @@ import lombok.*;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
-@Data
+import java.util.HashSet;
+import java.util.Set;
+
+@Getter
+@Setter
+@ToString
 @AllArgsConstructor
 
 public class User {
     @Min(1)
-    private int id;
+    private long id;
 
     @NotBlank
     @NotNull
@@ -27,4 +32,5 @@ public class User {
     @Past
     @NotNull
     private LocalDate birthday;
+    private Set<Long> friendsId;
 }
