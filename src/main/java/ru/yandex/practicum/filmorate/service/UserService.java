@@ -2,11 +2,12 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.UserIdException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.user.UserStorage;
+import ru.yandex.practicum.filmorate.storage.user.dao.FriendsDao;
+import ru.yandex.practicum.filmorate.storage.user.dao.UserStorage;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -18,10 +19,11 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final UserStorage userStorage;
+    private final FriendsDao friendsDao;
 
-    @Autowired
-    public UserService(UserStorage userStorage) {
+    public UserService(@Qualifier("UserDbStorage") UserStorage userStorage, FriendsDao friendsDao) {
         this.userStorage = userStorage;
+        this.friendsDao = friendsDao;
     }
 
     public void addFriend (long userId, long friendId) throws UserIdException {
@@ -29,26 +31,24 @@ public class UserService {
             log.debug("Check user {} check friend {}", userId, friendId);
             throw new UserIdException("User with id: " + userId + " or user friend with id: " + friendId + " not found");
         }
-        userStorage.getUserById(userId).getFriendsId().add(friendId);
-        userStorage.getUserById(friendId).getFriendsId().add(userId);
+        friendsDao.addFriend(userId,friendId);
     }
 
-    public void removeFriend(long userId, long friendId) throws UserIdException {
+    public void removeFriend(long userId, long friendId)  {
         if (userId <= 0 || friendId <= 0) {
             log.debug("Check user {} check friend {}", userId, friendId);
             throw new UserIdException("User with id: " + userId + " or user friend with id: " + friendId + " not found");
         }
-        userStorage.getUserById(userId).getFriendsId().remove(friendId);
-        userStorage.getUserById(friendId).getFriendsId().remove(userId);
+        friendsDao.deleteFriend(userId,friendId);
     }
 
-    public List<User> getAllFriends (long userId) throws UserIdException {
+    public List<User> getAllFriends (long userId)  {
         if (userId <= 0) {
             log.debug("User {}", userId);
             throw new UserIdException(String.format("user with id:%s not found", userId));
         }
         List<User> allFriendsList = new ArrayList<>();
-        for (long friendId : userStorage.getUserById(userId).getFriendsId()) {
+        for (long friendId : friendsDao.getFriends(userId)) {
             allFriendsList.add(userStorage.getUserById(friendId));
         }
         return allFriendsList;

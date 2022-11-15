@@ -27,7 +27,7 @@ public class UserController {
     }
 
     @PostMapping
-    public User create(@RequestBody User user) throws ValidationException, UserIdException {
+    public User create(@RequestBody User user)  {
         return userService.getUserStorage().createUser(user);
     }
 

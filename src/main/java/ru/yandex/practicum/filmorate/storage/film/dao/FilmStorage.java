@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.storage.film;
+package ru.yandex.practicum.filmorate.storage.film.dao;
 
 import ru.yandex.practicum.filmorate.exception.FilmIdExceptoin;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
@@ -11,13 +11,13 @@ public interface FilmStorage {
 
     Collection<Film> getAllFilms();
 
-    Film addFilm (Film film) throws ValidationException, FilmIdExceptoin;
+    Film addFilm (Film film) ;
 
-    Film updateFilm (Film film) throws ValidationException, FilmIdExceptoin;
+    Film updateFilm (Film film) ;
 
-    void deleteFilm (long id) throws FilmIdExceptoin;
+    void deleteFilm (long id) ;
 
-    Film getFilmById (long id) throws FilmIdExceptoin;
+    Film getFilmById (long id) ;
 
     void deleteAllFilms ();
 

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.FilmIdExceptoin;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.storage.film.dao.FilmStorage;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -90,8 +91,8 @@ public class InMemoryFilmStorage implements FilmStorage {
             log.error("Film duration cannot be less than zero{}", film.toString());
             throw new ValidationException("Film duration cannot be less than zero");
         } else if (film.getId() < 0) {
-            log.error("Film with id {} was found", id);
-            throw new FilmIdExceptoin("Film with id " + id + "was found");
+            log.error("Film with id {} was found", film.getId());
+            throw new FilmIdExceptoin("Film with id " + film.getId() + "was found");
         }
 
     }
