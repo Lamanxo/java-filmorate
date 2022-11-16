@@ -58,6 +58,9 @@ public class FriendsDaoImpl implements FriendsDao {
 
     @Override
     public void deleteFriend(long userId, long friendId) {
+        if (idCheck(userId) == 0 || idCheck(friendId) == 0) {
+            throw new UserIdException("User or Friend id is incorrect");
+        }
         String sql = "delete from FRIENDS where USER_ID = ? AND FRIEND_ID = ?";
         jdbc.update(sql, userId, friendId);
     }

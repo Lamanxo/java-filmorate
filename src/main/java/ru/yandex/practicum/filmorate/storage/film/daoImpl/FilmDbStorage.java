@@ -53,7 +53,7 @@ public class FilmDbStorage implements FilmStorage {
                 " FILM_RATE, MPA_ID) VALUES (?,?,?,?,?,?)";
         jdbc.update(sql, film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(),
                 film.getRate(), film.getMpa().getId());
-        String count = "select count(FILM_ID) from FILMS";
+        String count = "select (FILM_ID) from FILMS ORDER BY FILM_ID DESC LIMIT 1";
         film.setId(jdbc.queryForObject(count, Long.class));
         if (film.getGenres() != null) {
             genreDao.addGenresToFilm(film);
@@ -82,7 +82,7 @@ public class FilmDbStorage implements FilmStorage {
     }
     public Film updateFilm (Film film) {
         if (idCheck((int)film.getId()) == 0) {
-            throw new IdNotFoundException("Film with ID " + film.getId() + " not found");
+            throw new FilmIdExceptoin("Film with ID " + film.getId() + " not found");
         }
         if (film.getGenres() != null) {
             genreDao.updateGenresOfFilm(film);
@@ -98,14 +98,14 @@ public class FilmDbStorage implements FilmStorage {
 
     public void deleteFilm (long id) {
         if (idCheck((int)id) == 0) {
-            throw new IdNotFoundException("Film with ID " + id + " not found");
+            throw new FilmIdExceptoin("Film with ID " + id + " not found");
         }
         String sql = "delete from FILMS where FILM_ID = ?";
         jdbc.update(sql, id);
     }
     public Film getFilmById (long id) {
         if (idCheck((int)id) == 0) {
-            throw new IdNotFoundException("Film with ID " + id + " not found");
+            throw new FilmIdExceptoin("Film with ID " + id + " not found");
         }
         String sql = "select * from FILMS where FILM_ID = ?";
         return jdbc.queryForObject(sql,this::makeFilm,id);
