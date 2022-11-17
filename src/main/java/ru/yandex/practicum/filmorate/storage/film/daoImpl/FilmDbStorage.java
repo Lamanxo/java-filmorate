@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.storage.film.daoImpl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.FilmIdExceptoin;
@@ -28,6 +29,7 @@ public class FilmDbStorage implements FilmStorage {
     private LikesDao likesDao;
     private GenreDao genreDao;
 
+    @Autowired
     public FilmDbStorage(JdbcTemplate jdbc, MpaDao mpaDao, LikesDao likesDao, GenreDao genreDao) {
         this.jdbc = jdbc;
         this.mpaDao = mpaDao;
@@ -61,25 +63,6 @@ public class FilmDbStorage implements FilmStorage {
         return getFilmById(film.getId());
     }
 
-    private void validate(Film film) {
-        if (film.getName().isBlank()) {
-            log.error("Film name field is empty{}", film.toString());
-            throw new ValidationException("Film name field is empty");
-        } else if (film.getDescription().length() > 200) {
-            log.error("Film description length is more than 200 chars{}", film.toString());
-            throw  new ValidationException("Film description length is more than 200 chars");
-        } else if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
-            log.error("Film release date is before 1895,12,28{}", film.toString());
-            throw new ValidationException("Film release date is before 1895,12,28");
-        } else if (film.getDuration() < 0) {
-            log.error("Film duration cannot be less than zero{}", film.toString());
-            throw new ValidationException("Film duration cannot be less than zero");
-        } else if (film.getId() < 0) {
-            log.error("Film with id {} was found", film.getId());
-            throw new FilmIdExceptoin("Film with id " + film.getId() + "was found");
-        }
-
-    }
     public Film updateFilm (Film film) {
         if (idCheck((int)film.getId()) == 0) {
             throw new FilmIdExceptoin("Film with ID " + film.getId() + " not found");
@@ -95,7 +78,6 @@ public class FilmDbStorage implements FilmStorage {
 
         return getFilmById(film.getId());
     }
-
     public void deleteFilm (long id) {
         if (idCheck((int)id) == 0) {
             throw new FilmIdExceptoin("Film with ID " + id + " not found");
@@ -103,6 +85,7 @@ public class FilmDbStorage implements FilmStorage {
         String sql = "delete from FILMS where FILM_ID = ?";
         jdbc.update(sql, id);
     }
+
     public Film getFilmById (long id) {
         if (idCheck((int)id) == 0) {
             throw new FilmIdExceptoin("Film with ID " + id + " not found");
@@ -110,7 +93,6 @@ public class FilmDbStorage implements FilmStorage {
         String sql = "select * from FILMS where FILM_ID = ?";
         return jdbc.queryForObject(sql,this::makeFilm,id);
     }
-
     public void deleteAllFilms (){
         String sql = "delete from FILMS";
         jdbc.update(sql);
@@ -137,4 +119,23 @@ public class FilmDbStorage implements FilmStorage {
         return response;
     }
 
+    private void validate(Film film) {
+        if (film.getName().isBlank()) {
+            log.error("Film name field is empty{}", film.toString());
+            throw new ValidationException("Film name field is empty");
+        } else if (film.getDescription().length() > 200) {
+            log.error("Film description length is more than 200 chars{}", film.toString());
+            throw  new ValidationException("Film description length is more than 200 chars");
+        } else if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
+            log.error("Film release date is before 1895,12,28{}", film.toString());
+            throw new ValidationException("Film release date is before 1895,12,28");
+        } else if (film.getDuration() < 0) {
+            log.error("Film duration cannot be less than zero{}", film.toString());
+            throw new ValidationException("Film duration cannot be less than zero");
+        } else if (film.getId() < 0) {
+            log.error("Film with id {} was found", film.getId());
+            throw new FilmIdExceptoin("Film with id " + film.getId() + "was found");
+        }
+
+    }
 }

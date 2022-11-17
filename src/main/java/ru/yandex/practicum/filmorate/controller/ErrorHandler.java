@@ -16,19 +16,19 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleUserIdIncorrect(final UserIdException e) {
-        return new ErrorResponse(e.getMessage());
+               return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleFilmIdIncorrect(final FilmIdExceptoin e) {
-        return new ErrorResponse(e.getMessage());
+                return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleNotValidData(final ValidationException e) {
-        return new ErrorResponse(e.getMessage());
+                return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler

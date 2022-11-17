@@ -33,15 +33,13 @@ class FilmorateApplicationTests {
 	private final UserDbStorage us;
 	private final FriendsDao friendsDao;
 	private final FilmDbStorage fs;
-
 	private final MpaDao mpaDao;
-
 	private final GenreDao genreDao;
 
 	private final User user = new User(1, "mail@mail.ru", "mail", "Test",
 			LocalDate.of(2022, 1, 1), new HashSet<>());
 	private final Film film = new Film(1, "Batman", "DarkWings", LocalDate.of(2022, 1, 1),
-			90,5, new HashSet<>(), new HashSet<>(), Mpa.builder().id(1).build());
+			90,5, new HashSet<>(), new HashSet<>(), new Mpa(1,null));
 
 
 	@Test

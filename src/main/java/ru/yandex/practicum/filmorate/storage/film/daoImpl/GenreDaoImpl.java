@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.storage.film.daoImpl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.IdNotFoundException;
@@ -16,7 +17,7 @@ import java.util.*;
 public class GenreDaoImpl implements GenreDao {
 
     private final JdbcTemplate jdbc;
-
+    @Autowired
     public GenreDaoImpl(JdbcTemplate jdbc) {
         this.jdbc = jdbc;
     }
@@ -30,17 +31,6 @@ public class GenreDaoImpl implements GenreDao {
         return jdbc.queryForObject(sql,this::makeGenre, id);
     }
 
-    private Genre makeGenre(ResultSet rs, int ruwNum) throws SQLException {
-        return new Genre(rs.getInt("GENRE_ID"),
-                rs.getString("GENRE_NAME"));
-
-    }
-
-    private int idCheck (int id) {
-        String sql = "select count(*) from GENRES where GENRE_ID = ?";
-        int response =jdbc.queryForObject(sql, Integer.class, id);
-        return response;
-    }
     @Override
     public Collection<Genre> getAllGenres() {
         String sql = "select GENRE_ID, GENRE_NAME from GENRES";
@@ -57,7 +47,6 @@ public class GenreDaoImpl implements GenreDao {
         return genresMap;
     }
 
-
     @Override
     public void addGenresToFilm(Film film) {
         String sql = "insert into FILMS_GENRES (FILM_ID, GENRE_ID) VALUES (?, ?)";
@@ -73,4 +62,15 @@ public class GenreDaoImpl implements GenreDao {
         addGenresToFilm(film);
     }
 
+    private Genre makeGenre(ResultSet rs, int ruwNum) throws SQLException {
+        return new Genre(rs.getInt("GENRE_ID"),
+                rs.getString("GENRE_NAME"));
+
+    }
+
+    private int idCheck (int id) {
+        String sql = "select count(*) from GENRES where GENRE_ID = ?";
+        int response =jdbc.queryForObject(sql, Integer.class, id);
+        return response;
+    }
 }

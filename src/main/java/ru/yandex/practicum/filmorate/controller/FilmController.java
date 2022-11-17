@@ -1,4 +1,5 @@
 package ru.yandex.practicum.filmorate.controller;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.FilmIdExceptoin;
@@ -11,14 +12,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/films")
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class FilmController {
 
     private final FilmService filmService;
 
-    @Autowired
-    public FilmController(FilmService fs) {
-        this.filmService = fs;
-    }
 
     @GetMapping
     public Collection<Film> getAll() {

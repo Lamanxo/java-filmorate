@@ -36,16 +36,6 @@ public class UserDbStorage implements UserStorage {
         return jdbc.query(sql, this::makeUser);
     }
 
-    private User makeUser(ResultSet rs, int ruwNum) throws SQLException {
-        return new User(rs.getLong("USER_ID"),
-                rs.getString("USER_EMAIL"),
-                rs.getString("USER_LOGIN"),
-                rs.getString("USER_NAME"),
-                rs.getDate("USER_BIRTHDAY").toLocalDate(),
-                new HashSet<>(friendsDao.getFriends(rs.getLong("USER_ID")))
-                );
-    }
-
     @Override
     public User createUser(User user) {
         if (user.getName() == null || user.getName().isBlank()) {
@@ -59,25 +49,6 @@ public class UserDbStorage implements UserStorage {
         user.setId(jdbc.queryForObject(count, Long.class));
         return user;
 
-    }
-
-    public void validate(User user)  {
-        if (user.getEmail().isBlank() || user.getEmail().isEmpty()) {
-            log.error("Email field is empty{}", user.toString());
-            throw new ValidationException("Email field is empty");
-        } else if (!user.getEmail().contains("@")) {
-            log.error("Wrong email without <@>{}", user.toString());
-            throw new ValidationException("Wrong email without <@>");
-        } else if (user.getLogin().isEmpty() || user.getLogin().isBlank() || user.getLogin().contains(" ")) {
-            log.error("Login field is empty or contains spaces{}", user.toString());
-            throw new ValidationException("Login field is empty or contains spaces");
-        } else if (user.getBirthday().isAfter(LocalDate.now())) {
-            log.error("Birthdate error{}", user.toString());
-            throw new ValidationException("Birthdate error");
-        } else if ( user.getId() < 0) {
-            log.error("Id must be greater than zero {}", user.getId());
-            throw new UserIdException("Id must be greater than zero");
-        }
     }
 
     @Override
@@ -105,12 +76,6 @@ public class UserDbStorage implements UserStorage {
         jdbc.update(sql, id);
     }
 
-    private int idCheck (long id) {
-        String sql = "select count(*) from USERS where USER_ID = ?";
-        int response =jdbc.queryForObject(sql, Integer.class, id);
-        return response;
-    }
-
     @Override
     public User getUserById(long id) {
         SqlRowSet userRows = jdbc.queryForRowSet("select * from users where user_id = ?", id);
@@ -134,4 +99,39 @@ public class UserDbStorage implements UserStorage {
         }
     }
 
+
+    private User makeUser(ResultSet rs, int ruwNum) throws SQLException {
+        return new User(rs.getLong("USER_ID"),
+                rs.getString("USER_EMAIL"),
+                rs.getString("USER_LOGIN"),
+                rs.getString("USER_NAME"),
+                rs.getDate("USER_BIRTHDAY").toLocalDate(),
+                new HashSet<>(friendsDao.getFriends(rs.getLong("USER_ID")))
+        );
+    }
+
+    private int idCheck (long id) {
+        String sql = "select count(*) from USERS where USER_ID = ?";
+        int response =jdbc.queryForObject(sql, Integer.class, id);
+        return response;
+    }
+
+    private void validate(User user)  {
+        if (user.getEmail().isBlank() || user.getEmail().isEmpty()) {
+            log.error("Email field is empty{}", user.toString());
+            throw new ValidationException("Email field is empty");
+        } else if (!user.getEmail().contains("@")) {
+            log.error("Wrong email without <@>{}", user.toString());
+            throw new ValidationException("Wrong email without <@>");
+        } else if (user.getLogin().isEmpty() || user.getLogin().isBlank() || user.getLogin().contains(" ")) {
+            log.error("Login field is empty or contains spaces{}", user.toString());
+            throw new ValidationException("Login field is empty or contains spaces");
+        } else if (user.getBirthday().isAfter(LocalDate.now())) {
+            log.error("Birthdate error{}", user.toString());
+            throw new ValidationException("Birthdate error");
+        } else if ( user.getId() < 0) {
+            log.error("Id must be greater than zero {}", user.getId());
+            throw new UserIdException("Id must be greater than zero");
+        }
+    }
 }
