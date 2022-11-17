@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate;
 
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -16,11 +15,9 @@ import ru.yandex.practicum.filmorate.storage.film.daoImpl.FilmDbStorage;
 import ru.yandex.practicum.filmorate.storage.user.dao.FriendsDao;
 import ru.yandex.practicum.filmorate.storage.user.daoImpl.*;
 
-import javax.validation.constraints.AssertTrue;
 import java.time.LocalDate;
 import java.util.HashSet;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
