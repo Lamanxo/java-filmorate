@@ -3,12 +3,12 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.FilmIdExceptoin;
-import ru.yandex.practicum.filmorate.exception.UserIdException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.storage.film.dao.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.film.dao.LikesDao;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,9 +19,12 @@ import java.util.stream.Collectors;
 public class FilmService {
 
     private final FilmStorage filmStorage;
+    private final LikesDao ldao;
     @Autowired
-    public FilmService(FilmStorage filmStorage) {
+
+    public FilmService(@Qualifier("FilmDbStorage") FilmStorage filmStorage, LikesDao ldao) {
         this.filmStorage = filmStorage;
+        this.ldao = ldao;
     }
 
     public void addLike(long filmId, long userId) throws FilmIdExceptoin {
@@ -29,7 +32,7 @@ public class FilmService {
             log.debug("Check filmId {} check userId {}", filmId, userId);
             throw new FilmIdExceptoin("Film with id: " + filmId + " or user with id: " + userId + " not found");
         }
-        filmStorage.getFilmById(filmId).getLikes().add(userId);
+        ldao.addLike(filmId,userId);
     }
 
     public void removeLike(long filmId, long userId) throws FilmIdExceptoin {
@@ -37,7 +40,7 @@ public class FilmService {
             log.debug("Check filmId {} check userId {}", filmId, userId);
             throw new FilmIdExceptoin("Film with id: " + filmId + " or user with id: " + userId + " not found");
         }
-        filmStorage.getFilmById(filmId).getLikes().remove(userId);
+        ldao.removeLike(filmId,userId);
     }
 
     public List<Film> getPopularFilms(long count) {

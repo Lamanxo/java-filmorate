@@ -1,6 +1,6 @@
 package ru.yandex.practicum.filmorate.exception;
 
-public class UserIdException extends Exception{
+public class UserIdException extends RuntimeException{
     public UserIdException(String message) {
         super(message);
     }

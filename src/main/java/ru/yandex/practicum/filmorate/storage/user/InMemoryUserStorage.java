@@ -7,13 +7,14 @@ import org.springframework.web.server.ResponseStatusException;
 import ru.yandex.practicum.filmorate.exception.UserIdException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.user.dao.UserStorage;
 
 import java.time.LocalDate;
 import java.util.*;
 
 @Slf4j
-@Component
-public class InMemoryUserStorage implements UserStorage{
+@Component("InMemoryUserStorage")
+public class InMemoryUserStorage implements UserStorage {
 
     private final Map<Long, User> users = new HashMap<>();
     private long id = 0;
@@ -29,7 +30,7 @@ public class InMemoryUserStorage implements UserStorage{
         return users.values();
     }
     @Override
-    public User createUser(User user) throws ValidationException, UserIdException {
+    public User createUser(User user)  {
         if (user.getName().isBlank() || user.getName().isEmpty()) {
             user.setName(user.getLogin());
             log.debug("User name was empty and replaced with login{}", user.toString());
@@ -43,7 +44,7 @@ public class InMemoryUserStorage implements UserStorage{
         return user;
     }
     @Override
-    public User update(User user) throws ValidationException, UserIdException {
+    public User update(User user)  {
         if (user.getName().isBlank()) {
             user.setName(user.getLogin());
             log.debug("User name was empty and replaced with login{}", user.toString());
@@ -60,7 +61,7 @@ public class InMemoryUserStorage implements UserStorage{
         return user;
     }
 
-    public void validate(User user) throws ValidationException, UserIdException {
+    public void validate(User user)  {
         if (user.getEmail().isBlank() || user.getEmail().isEmpty()) {
             log.error("Email field is empty{}", user.toString());
             throw new ValidationException("Email field is empty");
@@ -86,7 +87,7 @@ public class InMemoryUserStorage implements UserStorage{
     }
     
     @Override
-    public void deleteUserById(long id) throws UserIdException {
+    public void deleteUserById(long id)  {
             if (users.containsKey(id)) {
                 users.remove(id);
                 log.info("User with id {} was removed", id);
@@ -99,7 +100,7 @@ public class InMemoryUserStorage implements UserStorage{
     }
 
     @Override
-    public User getUserById(long id) throws UserIdException {
+    public User getUserById(long id)  {
             if (users.containsKey(id)) {
                 log.info("User with id {} was found", id);
                 return users.get(id);
